@@ -1,0 +1,73 @@
+<div *ngIf="loading" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: rgba(0, 0, 0, 0.5);">
+    <div class="spinner-border" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+<div class="container mt-5">
+    <form [formGroup]="filterForm" class="row g-3">
+      <h1>Reportes</h1>
+      <hr>
+      <div class="col-md-3">
+        <label for="module" class="form-label">Modulo</label>
+        <select [class.is-invalid]="filterForm.get('module')?.invalid && (filterForm.get('module')?.dirty || filterForm.get('module')?.touched)" id="module" formControlName="module" class="form-select">
+          <option value="employee">Empleados</option>  
+          <option value="department">Departamentos</option>
+          <option value="workstations">Puestos</option>
+        </select>
+        <small class="invalid-feedback" *ngIf="filterForm.get('module')!.invalid && filterForm.get('module')!.touched && filterForm.get('module')!.getError('required')">
+          El tipo de reporte es requerido
+        </small>
+      </div>
+      <div class="col-md-3">
+        <label for="type" class="form-label">Tipo de reporte</label>
+        <select [class.is-invalid]="filterForm.get('type')?.invalid && (filterForm.get('type')?.dirty || filterForm.get('type')?.touched)" id="type" formControlName="type" class="form-select">
+          <option value="a">Altas</option>  
+          <option value="b">Bajas</option>
+        </select>
+        <small class="invalid-feedback" *ngIf="filterForm.get('type')!.invalid && filterForm.get('type')!.touched && filterForm.get('type')!.getError('required')">
+          El tipo de reporte es requerido
+        </small>
+      </div>
+       <div class="col-md-2">
+        <label for="graphic" class="form-label">Tipo de grafico</label>
+        <select [class.is-invalid]="filterForm.get('graphic')?.invalid && (filterForm.get('graphic')?.dirty|| filterForm.get('graphic')?.touched)" id="graphic" formControlName="graphic" class="form-select">
+          <option value="line">Línea</option>
+          <option value="bar">Barra</option>
+          <option value="radar">Radar</option>
+          <option value="pie">Pastel</option>
+          <option value="doughnut">Dona</option>
+          <option value="polarArea">Área Polar</option>
+        </select>
+        <small class="invalid-feedback" *ngIf="filterForm.get('graphic')!.invalid && filterForm.get('graphic')!.touched && filterForm.get('graphic')!.getError('required')">
+          El tipo de grafico es requerido
+        </small>
+      </div>
+      <div class="col-md-2">
+        <label for="startDate" class="form-label">Desde:</label>
+        <input [class.is-invalid]="filterForm.get('startDate')?.invalid && (filterForm.get('startDate')?.dirty || filterForm.get('startDate')?.touched)" type="date" id="startDate" formControlName="startDate" class="form-control">
+        <small class="invalid-feedback" *ngIf="filterForm.get('startDate')!.invalid && filterForm.get('startDate')!.touched && filterForm.get('startDate')!.getError('required')">
+          La fecha de inicio es requerida
+        </small>
+        <small class="form-text text-danger error-message" *ngIf="filterForm.invalid && filterForm.getError('invalid-date-range')">
+          La fecha de inicio debe ser menor a la fecha de finalización
+        </small>
+      </div>
+      <div class="col-md-2">
+        <label for="startDate" class="form-label">Hasta:</label>
+        <input [class.is-invalid]="filterForm.get('endDate')?.invalid && (filterForm.get('endDate')?.dirty|| filterForm.get('endDate')?.touched)" type="date" id="endDate" formControlName="endDate" class="form-control">
+        <small class="invalid-feedback" *ngIf="filterForm.get('endDate')!.invalid && filterForm.get('endDate')!.touched && filterForm.get('endDate')!.getError('required')">
+          La fecha de finalización es requerida
+        </small>
+      </div>
+      <div class="col-md-12 d-flex justify-content-center">
+        <button type="submit" class="btn btn-primary m-1 " (click)="showGraphs()">Generar</button>
+        <button type="submit" class="btn btn-danger m-1 " (click)="downloadChartAsPDF()">Descargar</button>
+        <button type="button" class="btn btn-secondary m-1" (click)="clean()">Limpiar</button>
+    </div>
+    </form>
+  </div>
+  
+  <div class="container mt-5" id="chart">
+    <canvas id="myChart"></canvas>
+  </div>

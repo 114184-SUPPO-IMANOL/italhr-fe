@@ -1,0 +1,99 @@
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <h1 class="text-center">Agregar un Usuario</h1>
+            <hr>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <form [formGroup]="form" style="border: 2px solid black; border-radius: 5px;">
+                <div class="container" style="padding: 10px;">
+                    <div class="row">
+                        <div class="mb-3">
+                            <label for="disabledTextInput" class="form-label">Legajo</label>
+                            <input type="text" id="disabledTextInput" class="form-control" [value]="idEmployee" disabled>
+                          </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Dirección de correo electrónico</label>
+                            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" formControlName="email"
+                            [ngClass]="{'is-invalid': form.get('email')?.invalid && form.get('email')?.touched}">
+                            <small class="invalid-feedback" *ngIf="!form.get('email')?.valid &&
+                            form.get('email')?.touched &&
+                            form.get('email')?.getError('required')">
+                            La dirección de correo electrónico es requerida 
+                            </small>
+                            <small class="invalid-feedback" *ngIf="!form.get('email')?.valid &&
+                            form.get('email')?.touched &&
+                            form.get('email')?.getError('repeated')">
+                            La dirección de correo electrónico ya se encuentra registrada
+                            </small>
+                        </div>
+                    </div>
+                    <div [formGroup]="passwordGroup">
+                        <div class="row">
+                            <div class="mb-3">
+                                <label for="exampleInputPassword1" class="form-label">Contraseña</label>
+                                <input type="password" class="form-control" id="exampleInputPassword1" formControlName="password" [ngClass]="{
+                                    'is-invalid': passwordGroup.get('password')?.invalid && passwordGroup.get('password')?.touched}">
+                                    <small class="invalid-feedback" *ngIf="passwordGroup.get('password')?.invalid && passwordGroup.get('password')?.touched &&
+                                    passwordGroup.get('password')?.getError('required')">
+                                    La contraseña es requerida</small>
+                                    <small class="invalid-feedback" *ngIf="passwordGroup.get('password')?.invalid && passwordGroup.get('password')?.touched &&
+                                    passwordGroup.get('password')?.getError('minlength')">
+                                    la contraseña no puede tener menos de 8 caracteres</small>
+                                    <small class="invalid-feedback" *ngIf="passwordGroup.get('password')?.invalid && passwordGroup.get('password')?.touched &&
+                                    passwordGroup.get('password')?.getError('maxlength')">
+                                    la contraseña no puede tener más de 255 caracteres</small>
+                                    <small class="invalid-feedback" *ngIf="passwordGroup.get('password')?.invalid && passwordGroup.get('password')?.touched &&
+                                    passwordGroup.get('password')?.getError('pattern')">
+                                    la contraseña debe tener al menos 1 mayúscula, 1 minuscula, 1 número y 1 simbolo</small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="mb-3">
+                                <label for="exampleInputRepeatPassword1" class="form-label">Confirmar contraseña</label>
+                                <input type="password" class="form-control" id="exampleInputRepeatPassword1" formControlName="repeatPassword" [ngClass]="{
+                                    'is-invalid': passwordGroup.get('repeatPassword')?.invalid && passwordGroup.get('repeatPassword')?.touched,
+                                }">
+                                <small class="invalid-feedback" *ngIf="passwordGroup.get('repeatPassword')?.invalid && passwordGroup.get('repeatPassword')?.touched &&
+                                passwordGroup.get('repeatPassword')?.getError('required')">
+                                La confirmación de contraseña es requerida</small>
+                            </div>
+                        </div>
+                        <small class="form-text text-danger error-message" *ngIf="!passwordGroup.valid && passwordGroup.getError('match-password')">
+                            La contraseñas no coinciden</small>
+                    </div>
+                    <br *ngIf="!passwordGroup.valid && passwordGroup.getError('match-password')">
+                    <div class="row">
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Rol</label>
+                            <select class="form-select" aria-label="Default select example" formControlName="role" [ngClass]="{
+                                'is-invalid': form.get('role')?.invalid && form.get('role')?.touched}">
+                                <option selected></option>
+                                <option value="ADMIN">Administrador</option>
+                                <option value="USER">Usuario</option>
+                            </select>
+                            <small class="invalid-feedback" *ngIf="!form.get('role?')?.valid &&
+                            form.get('role')?.touched &&
+                            form.get('role')?.getError('required')">
+                            El rol es requerido
+                        </small>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-6 d-grid gap-2 d-md-block">
+                          <button type="button" class="btn btn-danger" (click)="cancel()">Cancelar</button>
+                        </div>
+                        <div class="col-6 d-grid gap-2 d-md-flex justify-content-md-end">
+                          <button type="button" class="btn btn-primary" (click)="ngSubmit()">Agregar</button>
+                        </div>
+                      </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

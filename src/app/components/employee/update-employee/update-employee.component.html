@@ -1,0 +1,703 @@
+<div *ngIf="loading" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: rgba(0, 0, 0, 0.5);">
+  <div class="spinner-border" role="status" style="width: 3rem; height: 3rem;">
+      <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-6">
+      <h1 class="text-center">Actualizar un Empleado</h1>
+      <hr>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-6">
+
+      <!-- FORMULARIO DE DATOS PERSONALES   -->
+
+      <form [formGroup]="formPage1" style="border: 2px solid black; border-radius: 5px;" *ngIf="page == 1">
+        <div class="container" style="padding: 10px;">
+          <div class="row">
+            <label>Datos personales</label>
+          </div>
+          <hr>
+          <div>
+            <div class="row">
+              <div class="col">
+                <label for="firstName" class="form-label">Nombre</label>
+                <input type="text" class="form-control" aria-label="First name" formControlName="firstName" [ngClass]="{
+                  'is-invalid': formPage1.get('firstName')?.invalid && formPage1.get('firstName')?.touched
+                }">
+                <small class="invalid-feedback" *ngIf="!formPage1.get('firstName')!.valid &&
+                formPage1.get('firstName')!.touched &&
+                formPage1.get('firstName')!.getError('required')
+                ">
+                  El Nombre es requerido
+                </small>
+                <small class="invalid-feedback" *ngIf="!formPage1.get('firstName')!.valid &&
+                formPage1.get('firstName')!.touched &&
+                formPage1.get('firstName')?.getError('minlength')"> 
+                  El Nombre debe tener al menos 2 caracteres  
+                </small>
+                <small class="invalid-feedback" *ngIf="!formPage1.get('firstName')!.valid &&
+                formPage1.get('firstName')!.touched &&
+                formPage1.get('firstName')?.getError('maxlength')"> 
+                  El Nombre no debe tener más de 50 caracteres  
+                </small>
+                <small class="invalid-feedback" *ngIf="!formPage1.get('firstName')!.valid &&
+                formPage1.get('firstName')!.touched &&
+                formPage1.get('firstName')?.getError('pattern')"> 
+                  El Nombre no puede ser numérico  
+                </small>
+              </div>
+              <div class="col">
+                <label for="lastName" class="form-label">Apellido</label>
+                <input type="text" class="form-control" aria-label="Last name" formControlName="lastName" [ngClass]="{
+                  'is-invalid': formPage1.get('lastName')?.invalid && formPage1.get('lastName')?.touched
+                }">
+                <small class="invalid-feedback" *ngIf="!formPage1.get('lastName')!.valid &&
+                formPage1.get('lastName')!.touched &&
+                formPage1.get('lastName')!.getError('required')
+                ">
+                  El Apellido es requerido
+                </small>
+                <small class="invalid-feedback" *ngIf="!formPage1.get('lastName')!.valid &&
+                formPage1.get('lastName')!.touched &&
+                formPage1.get('lastName')?.getError('minlength')"> 
+                  El Apellido debe tener al menos 2 caracteres  
+                </small>
+                <small class="invalid-feedback" *ngIf="!formPage1.get('lastName')!.valid &&
+                formPage1.get('lastName')!.touched &&
+                formPage1.get('lastName')?.getError('maxlength')"> 
+                  El Apellido no debe tener más de 50 caracteres  
+                </small>
+                <small class="invalid-feedback" *ngIf="!formPage1.get('lastName')!.valid &&
+                formPage1.get('lastName')!.touched &&
+                formPage1.get('lastName')?.getError('pattern')"> 
+                  El Apellido no puede ser numérico  
+                </small>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col">
+                <label for="documentType" class="form-label">Tipo de documento</label>
+                <select class="form-select" aria-label="Document type" formControlName="documentType" [ngClass]="{
+                  'is-invalid': formPage1.get('documentType')?.invalid && formPage1.get('documentType')?.touched
+                }">
+                  <option selected></option>
+                  <option value="DNI">DNI</option>
+                  <option value="PASSPORT">Pasaporte</option>
+                  <option value="CI">Cédula de Identidad</option>
+                  <option value="LE">Libreta de Enrolamiento</option>
+                  <option value="LC">Libreta Cívica</option>
+                </select>
+                <small class="invalid-feedback" *ngIf="!formPage1.get('documentType')!.valid &&
+                formPage1.get('documentType')!.touched &&
+                formPage1.get('documentType')!.getError('required') ">
+                  El Tipo de documento es requerido
+                </small>
+              </div>
+              <div class="col">
+                <label for="documentNumber" class="form-label">Documento</label>
+                <input type="text" class="form-control" aria-label="Document number" formControlName="documentNumber"
+                  [ngClass]="{
+                  'is-invalid': formPage1.get('documentNumber')?.invalid && formPage1.get('documentNumber')?.touched
+                }">
+                <small class="invalid-feedback"
+                  *ngIf="!formPage1.get('documentNumber')!.valid && formPage1.get('documentNumber')!.touched && formPage1.get('documentNumber')!.getError('required') ">
+                  El Documento es requerido </small>
+                <small class="invalid-feedback" *ngIf="!formPage1.get('documentNumber')!.valid &&
+                  formPage1.get('documentNumber')!.touched &&
+                  formPage1.get('documentNumber')!.getError('repeated')
+                  ">
+                  La persona con este documenta ya se encuentra registrada
+                </small>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <label class="form-label">Genero</label>
+            </div>
+            <!-- TODO: Ver como setear los valores -->
+            <div class="row">
+              <div class="col-4">
+                <div class="form-check col-4">
+                  <input class="form-check-input" type="radio" name="gender" id="flexRadioDefault1"
+                    (click)="setGender('MALE')">
+                  <label class="form-check-label" for="flexRadioDefault1">
+                    Masculino
+                  </label>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-check col-4">
+                  <input class="form-check-input" type="radio" name="gender" id="flexRadioDefault2"
+                    (click)="setGender('FEMALE')">
+                  <label class="form-check-label" for="flexRadioDefault2">
+                    Femenino
+                  </label>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-check col-4">
+                  <input class="form-check-input" type="radio" name="gender" id="flexRadioDefault2"
+                    (click)="setGender('OTHER')" checked>
+                  <label class="form-check-label" for="flexRadioDefault2">
+                    Otro
+                  </label>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <label class="form-label">Estao civil</label>
+            </div>
+            <div class="row">
+              <!-- TODO: Agregar ID's a los radio buttons -->
+              <!-- TODO: Ver como setear los valores -->
+              <div class="col-3">
+                <div class="form-check col-3">
+                  <input class="form-check-input" type="radio" name="maritalStatus" id="flexRadioDefault1"
+                    (click)="setMaritalStatus('SINGLE')">
+                  <label class="form-check-label" for="flexRadioDefault1">
+                    Soltero/a
+                  </label>
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="form-check col-3">
+                  <input class="form-check-input" type="radio" name="maritalStatus" id="flexRadioDefault2"
+                    (click)="setMaritalStatus('MARRIED')">
+                  <label class="form-check-label" for="flexRadioDefault2">
+                    Casado/a
+                  </label>
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="form-check col-3">
+                  <input class="form-check-input" type="radio" name="maritalStatus" id="flexRadioDefault2"
+                    (click)="setMaritalStatus('DIVORCED')">
+                  <label class="form-check-label" for="flexRadioDefault2">
+                    Divorciado/a
+                  </label>
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="form-check col-3">
+                  <input class="form-check-input" type="radio" name="maritalStatus" id="flexRadioDefault2"
+                    (click)="setMaritalStatus('WIDOWED')" checked>
+                  <label class="form-check-label" for="flexRadioDefault2">
+                    Viudo/a
+                  </label>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-6">
+                <label for="nationality" class="form-label">Nacionalidad</label>
+                <select class="form-select" aria-label="Nationality" formControlName="nationality" [ngClass]="{
+                  'is-invalid': formPage1.get('nationality')?.invalid && formPage1.get('nationality')?.touched
+                }">
+                  <option *ngFor="let nationality of nationalities" [value]="nationality"> {{ nationality }} </option>
+                </select>
+                <small class="invalid-feedback" *ngIf="!formPage1.get('nationality')!.valid &&
+                formPage1.get('nationality')!.touched && formPage1.get('nationality')!.getError('required') ">
+                  La Nacionalidad es requerida </small>
+              </div>
+              <div class="col-6">
+                <label for="birthDate" class="form-label">Fecha de nacimiento</label>
+                <input class="form-control" type="date" name="birthDate" id="birthDate" formControlName="birthDate"
+                  [ngClass]="{
+                  'is-invalid': formPage1.get('birthDate')?.invalid && formPage1.get('birthDate')?.touched
+                }">
+                <small class="invalid-feedback" *ngIf="!formPage1.get('birthDate')!.valid &&
+                  formPage1.get('birthDate')!.touched && formPage1.get('birthDate')!.getError('invalidAge') ">
+                  Debe ser mayor de 18 años </small>
+                <small class="invalid-feedback" *ngIf="!formPage1.get('birthDate')!.valid &&
+                formPage1.get('birthDate')!.touched && formPage1.get('birthDate')!.getError('required') ">
+                  La Fecha de nacimiento es requerida </small>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-6 d-grid gap-2 d-md-block">
+              <button type="button" class="btn btn-danger" (click)="cancel()">Cancelar</button>
+            </div>
+            <div class="col-6 d-grid gap-2 d-md-flex justify-content-md-end">
+              <button type="button" class="btn btn-primary" (click)="nextPage()">Siguiente</button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <!-- FORMULARIO DE CONTRATO -->
+
+      <form [formGroup]="formPage2" style="border: 2px solid black; border-radius: 5px;" *ngIf="page == 2">
+        <div class="container" style="padding: 10px;">
+          <div class="row">
+            <label>Datos del contrato</label>
+          </div>
+          <hr>
+          <div>
+            <div class="row">
+              <div class="col">
+                <label for="workstation" class="form-label">Puesto</label>
+                <select class="form-select" aria-label="Workstation" formControlName="workstation" [ngClass]="{
+                  'is-invalid': !formPage2.get('workstation')?.valid && formPage2.get('workstation')?.touched
+                }">
+                  <option selected></option>
+                  <option *ngFor="let workstation of workstations" [value]="workstation.id">{{workstation.name}}</option>
+                </select>
+                <small class="invalid-feedback" *ngIf="formPage2.get('workstation')?.invalid && formPage2.get('workstation')?.touched &&
+                formPage2.get('workstation')?.getError('required')">
+                  El puesto es requerido </small>
+              </div>
+              <div class="col">
+                <label for="departament" class="form-label">Departamento</label>
+                <select class="form-select" aria-label="Departament" formControlName="department" [ngClass]="{
+                  'is-invalid': !formPage2.get('department')?.valid && formPage2.get('department')?.touched
+                }">
+                  <option selected></option>
+                  <option *ngFor="let department of departments" [value]="department.id">{{department.name}}</option>
+                </select>
+                <small class="invalid-feedback" *ngIf="formPage2.get('department')?.invalid && formPage2.get('department')?.touched &&
+                formPage2.get('department')?.getError('required')">
+                El departamento es requerido </small>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col">
+                <label for="reasonForIncorporation">Motivo de la incorporación</label>
+                <textarea class="form-control" id="reasonForIncorporation" rows="3"
+                  formControlName="reasonForIncorporation" [ngClass]="{
+                  'is-invalid': !formPage2.get('reasonForIncorporation')?.valid && formPage2.get('reasonForIncorporation')?.touched
+                }"></textarea>
+                <small class="invalid-feedback" *ngIf="formPage2.get('reasonForIncorporation')!.invalid && 
+                formPage2.get('reasonForIncorporation')!.touched &&
+                formPage2.get('reasonForIncorporation')!.getError('required') ">
+                  El motivo de la incorporación es requerido 
+                </small>
+                <small class="invalid-feedback" *ngIf="formPage2.get('reasonForIncorporation')!.invalid && 
+                formPage2.get('reasonForIncorporation')!.touched &&
+                formPage2.get('reasonForIncorporation')!.getError('maxlength') ">
+                  El motivo de la incorporación no debe tener más de 255 caracteres 
+                </small>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-6 d-grid gap-2 d-md-block">
+              <button type="button" class="btn btn-danger" (click)="cancel()">Cancelar</button>
+            </div>
+            <div class="col-6 d-grid gap-2 d-md-flex justify-content-md-end">
+              <button type="button" class="btn btn-success" (click)="previousPage()">Atras</button>
+              <button type="button" class="btn btn-primary" (click)="nextPage()">Siguiente</button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <!-- FORMULARIO DE DATOS DE JORNADA -->
+
+
+      <form [formGroup]="formPage3" style="border: 2px solid black; border-radius: 5px;" *ngIf="page == 3">
+        <div class="container" style="padding: 10px;">
+          <div class="row">
+            <label>Datos de jornada / carga horaria y observaciones</label>
+          </div>
+          <hr>
+          <div>
+            <div class="row">
+              <!-- TODO: Ver como validar los radios -->
+              <div class="col-5">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="workdayType" id="workdayType1"
+                    (click)="setWorkdayType('FULL_TIME')" checked>
+                  <label class="form-check-label" for="workdayType1">
+                    JORNADA COMPLETA
+                  </label>
+                </div>
+                <br>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="workdayType" id="workdayType2"
+                    (click)="setWorkdayType('PART_TIME')">
+                  <label class="form-check-label" for="workdayType2">
+                    JORNADA PARCIAL
+                  </label>
+                </div>
+              </div>
+              <div class="col-7">
+                <label for="workload" class="form-label">Cargar horaria semanal</label>
+                <input type="number" class="form-control" aria-label="Workload" formControlName="workload" [ngClass]="{
+                  'is-invalid': !formPage3.get('workload')?.valid && formPage3.get('workload')?.touched
+                
+                }">
+                <small class="invalid-feedback" *ngIf="formPage3.get('workload')!.invalid && 
+                  formPage3.get('workload')!.touched &&
+                  formPage3.get('workload')!.getError('required') ">
+                  La carga horaria es requerida 
+                </small>
+                <small class="invalid-feedback" *ngIf="formPage3.get('workload')!.invalid && 
+                  formPage3.get('workload')!.touched &&
+                  formPage3.get('workload')!.getError('min') ">
+                  La carga horaria no puede ser menor a 1 
+                </small>
+                <small class="invalid-feedback" *ngIf="formPage3.get('workload')!.invalid && 
+                  formPage3.get('workload')!.touched &&
+                  formPage3.get('workload')!.getError('max') ">
+                  La carga horaria no puede ser mayor a 48
+                </small>
+              </div>
+            </div>
+            <br>
+            <hr>
+            <div class="row">
+              <div class="col-5">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="contractType" id="contractType1"
+                    (click)="setContractType('INDEFINITE')" [attr.checked]="employeeForm.contractType == 'INDEFINITE' ? '' : null">
+                  <label class="form-check-label" for="contractType1">
+                    Personal permanente
+                  </label>
+                </div>
+                <br>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="contractType" id="contractType2"
+                    (click)="setContractType('TEMPORARY')" [attr.checked]="employeeForm.contractType == 'TEMPORARY' ? '' : null">
+                  <label class="form-check-label" for="contractType2">
+                    Personal temporario
+                  </label>
+                </div>
+              </div>
+              <div class="col-7">
+                <!-- TODO: Validar que dependendiendo del contractType se muestre o no el campo -->
+                <div class="row">
+                  <div class="col" *ngIf="employeeForm.contractType == 'INDEFINITE'">
+                    <label for="contractFromIndefinite" class="form-label">Desde</label>
+                    <input class="form-control" type="date" name="contractFromIndefinite" id="contractFromIndefinite"
+                      formControlName="contractFromIndefinite" [ngClass]="{
+                      'is-invalid': !formPage3.get('contractFromIndefinite')?.valid && formPage3.get('contractFromIndefinite')?.touched
+                    }">
+                    <small class="invalid-feedback" *ngIf="formPage3.get('contractFromIndefinite')!.invalid && formPage3.get('contractFromIndefinite')!.touched &&
+                                    formPage3.get('contractFromIndefinite')!.getError('required') ">
+                      La fecha de inicio del contrato es requerida </small>
+                    <small class="invalid-feedback" *ngIf="formPage3.get('contractFromIndefinite')!.invalid && formPage3.get('contractFromIndefinite')!.touched &&
+                    formPage3.get('contractFromIndefinite')!.getError('younger') ">
+                      Debe empezar siendo mayor de edad</small>
+                  </div>
+                </div>
+                <div class="row" [formGroup]="temporaryGroup" *ngIf="employeeForm.contractType == 'TEMPORARY'">
+                  <div class="col-6">
+                    <label for="contractFromTemporary" class="form-label">Desde</label>
+                    <input class="form-control" type="date" name="contractFromTemporary" id="contractFromTemporary"
+                      formControlName="contractFromTemporary" [ngClass]="{
+                      'is-invalid': !temporaryGroup.get('contractFromTemporary')?.valid && temporaryGroup.get('contractFromTemporary')?.touched
+                      }">
+                    <small class="invalid-feedback" *ngIf="temporaryGroup.get('contractFromTemporary')!.invalid && temporaryGroup.get('contractFromTemporary')!.touched &&
+                      temporaryGroup.get('contractFromTemporary')!.getError('younger') ">
+                      Debe empezar siendo mayor de edad
+                    </small>
+                    <small class="invalid-feedback" *ngIf="!temporaryGroup.get('contractFromTemporary')!.valid && temporaryGroup.get('contractFromTemporary')!.touched &&
+                    temporaryGroup.get('contractFromTemporary')!.getError('required')">
+                      La fecha de inicio es requerida 
+                    </small>
+                  </div>
+                  <div class="col-6">
+                    <label for="contractToTemporary" class="form-label">Hasta</label>
+                    <input class="form-control" type="date" name="contractToTemporary" id="contractToTemporary"
+                      formControlName="contractToTemporary" [ngClass]="{
+                      'is-invalid': !temporaryGroup.get('contractToTemporary')?.valid && temporaryGroup.get('contractToTemporary')?.touched
+                      }">
+                      <small class="invalid-feedback" *ngIf="!temporaryGroup.get('contractToTemporary')!.valid && temporaryGroup.get('contractToTemporary')!.touched &&
+                      temporaryGroup.get('contractToTemporary')!.getError('required')">
+                        La fecha de finalización es requerida 
+                      </small>
+                  </div>
+                  <small class="form-text text-danger error-message" *ngIf="!temporaryGroup.valid && temporaryGroup.getError('invalid-date-range')">
+                  La fecha finalización del contrato no puede ser anterior a la fecha de inicio del contrato</small>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-5">
+                <label for="membersTeamQuantity" class="form-label">Cantidad de integrantes en el equipo</label>
+                <input type="number" class="form-control" aria-label="membersTeamQuantity"
+                  formControlName="membersTeamQuantity" [ngClass]="{
+                  'is-invalid': !formPage3.get('membersTeamQuantity')?.valid && formPage3.get('membersTeamQuantity')?.touched
+                }">
+                <small class="invalid-feedback" *ngIf="formPage3.get('membersTeamQuantity')!.invalid && 
+                formPage3.get('membersTeamQuantity')!.touched &&
+                formPage3.get('membersTeamQuantity')!.getError('required') ">
+                  La cantidad de integrantes en el equipo es requerida 
+                </small>
+                <small class="invalid-feedback" *ngIf="formPage3.get('membersTeamQuantity')!.invalid && 
+                formPage3.get('membersTeamQuantity')!.touched &&
+                formPage3.get('membersTeamQuantity')!.getError('min') ">
+                  La cantidad de integrantes en el equipo no puede ser menor a 1 
+                </small>
+              </div>
+              <div class="col-7">
+                <label for="estimatedEffect">Impacto estimado</label>
+                <textarea class="form-control" id="estimatedEffect" rows="3" formControlName="effectEstimated"
+                  [ngClass]="{
+                  'is-invalid': !formPage3.get('effectEstimated')?.valid && formPage3.get('effectEstimated')?.touched
+                }"></textarea>
+                <small class="invalid-feedback" *ngIf="formPage3.get('effectEstimated')!.invalid && 
+                formPage3.get('effectEstimated')!.touched &&
+                formPage3.get('effectEstimated')!.getError('maxlength')">
+                  El impacto estimado no debe tener más de 255 caracteres 
+                </small>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-6 d-grid gap-2 d-md-block">
+              <button type="button" class="btn btn-danger" (click)="cancel()">Cancelar</button>
+            </div>
+            <div class="col-6 d-grid gap-2 d-md-flex justify-content-md-end">
+              <button type="button" class="btn btn-success" (click)="previousPage()">Atras</button>
+              <button type="button" class="btn btn-primary" (click)="nextPage()">Siguiente</button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <!-- FORMULARIO DE DATOS DE RETRIBUCION -->
+
+
+      <form [formGroup]="formPage4" style="border: 2px solid black; border-radius: 5px;" *ngIf="page == 4">
+        <div class="container" style="padding: 10px;">
+          <div class="row">
+            <label>Datos de retribución / costos</label>
+          </div>
+          <hr>
+          <div>
+            <div class="row">
+              <div class="col">
+                <label for="monthlySalary" class="form-label">Costo mensual</label>
+                <input type="number" class="form-control" aria-label="Monthly Salary" formControlName="monthlySalary"
+                  [ngClass]="{
+                  'is-invalid': !formPage4.get('monthlySalary')?.valid && formPage4.get('monthlySalary')?.touched
+                }">
+                <small class="invalid-feedback" *ngIf="formPage4.get('monthlySalary')!.invalid && 
+                formPage4.get('monthlySalary')!.touched &&
+                formPage4.get('monthlySalary')!.getError('required') ">
+                  El costo mensual es requerido 
+                </small>
+                <small class="invalid-feedback" *ngIf="formPage4.get('monthlySalary')!.invalid && 
+                formPage4.get('monthlySalary')!.touched &&
+                formPage4.get('monthlySalary')!.getError('min') ">
+                  El costo mensual no puede ser menor a 1 
+                </small>
+              </div>
+              <div class="col">
+                <label for="annualSalary" class="form-label">Costo anual</label>
+                <input type="number" class="form-control" aria-label="Annual Salary" formControlName="annualSalary"
+                  [ngClass]="{
+                  'is-invalid': !formPage4.get('annualSalary')?.valid && formPage4.get('annualSalary')?.touched
+                }">
+                <small class="invalid-feedback" *ngIf="formPage4.get('annualSalary')!.invalid && 
+                formPage4.get('annualSalary')!.touched &&
+                formPage4.get('annualSalary')!.getError('required') ">
+                  El costo anual es requerido 
+                </small>
+                <small class="invalid-feedback" *ngIf="formPage4.get('annualSalary')!.invalid && 
+                formPage4.get('annualSalary')!.touched &&
+                formPage4.get('annualSalary')!.getError('min') ">
+                  El costo anual no puede ser menor a 1 
+                </small>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col">
+                <label for="commentsSalary">Observaciones de retribución</label>
+                <textarea class="form-control" id="commentsSalary" rows="3" formControlName="commentsSalary"
+                [ngClass]="{
+                  'is-invalid': !formPage4.get('commentsSalary')?.valid && formPage4.get('commentsSalary')?.touched
+                }"></textarea>
+                <small class="invalid-feedback" *ngIf="formPage4.get('commentsSalary')!.invalid && 
+                formPage4.get('commentsSalary')!.touched &&
+                formPage4.get('commentsSalary')!.getError('maxlength') ">
+                  Las observaciones de retribución no deben tener más de 255 caracteres
+                </small>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-6">
+                <label for="manager" class="form-label">Encargado de la solicitud:</label>
+                <input type="text" class="form-control" aria-label="Manager" formControlName="manager" [ngClass]="{
+                  'is-invalid': !formPage4.get('manager')?.valid && formPage4.get('manager')?.touched
+                }">
+                <small class="invalid-feedback" *ngIf="formPage4.get('manager')!.invalid && 
+                formPage4.get('manager')!.touched &&
+                formPage4.get('manager')!.getError('required') ">
+                  El encargado de la solicitud es requerido 
+                </small>
+                <small class="invalid-feedback" *ngIf="formPage4.get('manager')!.invalid && 
+                formPage4.get('manager')!.touched &&
+                formPage4.get('manager')!.getError('maxlength') ">
+                  El encargado de la solicitud no debe tener más de 255 caracteres 
+                </small>
+                <small class="invalid-feedback" *ngIf="formPage4.get('manager')!.invalid && 
+                formPage4.get('manager')!.touched &&
+                formPage4.get('manager')!.getError('pattern') ">
+                  El encargado de la solicitud no puede ser numérico 
+                </small>
+              </div>
+              <div class="col-6">
+                <label for="requestReceivedOthersRemarks" class="form-label">Fecha de solicitud</label>
+                <input class="form-control" type="date" name="requestReceivedOthersRemarks"
+                  id="requestReceivedOthersRemarks" formControlName="requestReceived" [ngClass]="{
+                  'is-invalid': !formPage4.get('requestReceived')?.valid && formPage4.get('requestReceived')?.touched
+                }">
+                <small class="invalid-feedback" *ngIf="formPage4.get('requestReceived')!.invalid && formPage4.get('requestReceived')!.touched &&
+                formPage4.get('requestReceived')!.getError('required') ">
+                  La fecha de solicitud es requerida </small>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col">
+                <label for="commentsSalary">Observaciones de la solicitud</label>
+                <textarea class="form-control" id="commentsSalary" rows="3" formControlName="commentsOther"
+                [ngClass]="{
+                  'is-invalid': !formPage4.get('commentsOther')?.valid && formPage4.get('commentsOther')?.touched
+                }"></textarea>
+                <small class="invalid-feedback" *ngIf="formPage4.get('commentsOther')!.invalid && 
+                formPage4.get('commentsOther')!.touched &&
+                formPage4.get('commentsOther')!.getError('maxlength') ">
+                  Las Observaciones de la solicitud no debe tener más de 255 caracteres 
+                </small>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-6 d-grid gap-2 d-md-block">
+              <button type="button" class="btn btn-danger" (click)="cancel()">Cancelar</button>
+            </div>
+            <div class="col-6 d-grid gap-2 d-md-flex justify-content-md-end">
+              <button type="button" class="btn btn-success" (click)="previousPage()">Atras</button>
+              <button type="button" class="btn btn-primary" (click)="nextPage()">Siguiente</button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <!-- FORMULARIO DE SLECCION DE REFERENTE -->
+
+
+      <form [formGroup]="formPage5" style="border: 2px solid black; border-radius: 5px;" *ngIf="page == 5">
+        <div class="container" style="padding: 10px;">
+          <div class="row">
+            <label>Selección de referente</label>
+          </div>
+          <hr>
+          <div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Legajo</th>
+                  <th scope="col">Nombre y Apellido</th>
+                  <th scope="col">Nº Documento</th>
+                  <th scope="col">Ingreso</th>
+                  <th scope="col">Seleccionar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let employee of referents">
+                  <th scope="row">{{ employee.id }}</th>
+                  <td>{{ employee.firstName }}</td>
+                  <td>{{ employee.documentNumber }}</td>
+                  <td>{{ employee.startDate }}</td>
+                  <td>
+                    <!-- TODO: Ver si cambiar este checkbox -->
+                    <div class="form-check"
+                      style="display: flex; justify-content: center; align-items: center; height: 100%;">
+                      <input class="form-check-input" type="checkbox" (click)="setReferent(employee.id)"
+                        [checked]="employee.id == employeeForm.referentId">
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" formControlName="isReferent">
+              <label class="form-check-label" for="flexCheckDefault">
+                Permitir que sea referente
+              </label>
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-6 d-grid gap-2 d-md-block">
+              <button type="button" class="btn btn-danger" (click)="cancel()">Cancelar</button>
+            </div>
+            <div class="col-6 d-grid gap-2 d-md-flex justify-content-md-end">
+              <button type="button" class="btn btn-success" (click)="previousPage()">Atras</button>
+              <button type="button" class="btn btn-primary" (click)="nextPage()">Siguiente</button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <!-- FORMULARIO DE AUTORIZACION -->
+
+      <form [formGroup]="formPage6" style="border: 2px solid black; border-radius: 5px;" *ngIf="page == 6">
+        <div class="container" style="padding: 10px;">
+          <div class="row">
+            <label>Autorización</label>
+          </div>
+          <hr>
+          <div>
+            <div class="row">
+              <div class="col">
+                <label for="requestReceived" class="form-label">Solicitud recibida el dia:</label>
+                <input class="form-control" type="date" name="requestReceived" id="requestReceived" [value]="formPage4.get('requestReceived')!.value" disabled>
+              </div>
+              <div class="col">
+                <label for="requestReceived" class="form-label">Encargado de la solicitud</label>
+                <input class="form-control" type="text" name="manager" id="manager" [value]="formPage4.get('manager')!.value" disabled>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col">
+                <label for="commentsAuthorization">Observaciones</label>
+                <textarea class="form-control" id="commentsAuthorization" rows="3"formControlName="comments"
+                  [ngClass]="{
+                    'is-invalid': !formPage6.get('comments')?.valid && formPage6.get('comments')?.touched
+                  }"></textarea>
+                  <small class="invalid-feedback" *ngIf="formPage6.get('comments')!.invalid && 
+                  formPage6.get('comments')!.touched &&
+                  formPage6.get('comments')!.getError('maxlength') ">
+                    Las Observaciones no debe tener más de 255 caracteres 
+                  </small>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-6 d-grid gap-2 d-md-block">
+              <button type="button" class="btn btn-danger" (click)="cancel()">Cancelar</button>
+            </div>
+            <div class="col-6 d-grid gap-2 d-md-flex justify-content-md-end">
+              <button type="button" class="btn btn-success" (click)="previousPage()">Atras</button>
+              <button type="button" class="btn btn-primary" (click)="onSubmit()">Agregar</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

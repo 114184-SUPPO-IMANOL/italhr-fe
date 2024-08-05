@@ -1,0 +1,398 @@
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <h1 class="text-center">Agregar un Puesto</h1>
+            <hr>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-6">
+
+            <!-- FORMULARIO DE DATOS PRINCIPALES   -->
+
+            <form [formGroup]="formPage1" style="border: 2px solid black; border-radius: 5px;" *ngIf="page == 1">
+                <div class="container" style="padding: 10px;">
+                    <div class="row">
+                        <label>Datos principales</label>
+                    </div>
+                    <hr>
+                    <div>
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="name" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" aria-label="Name" formControlName="name"
+                                    [ngClass]="{
+                        'is-invalid': formPage1.get('name')?.invalid && formPage1.get('name')?.touched
+                        }">
+                                <small class="invalid-feedback" *ngIf="!formPage1.get('name')!.valid &&
+                        formPage1.get('name')!.touched &&
+                        formPage1.get('name')!.getError('required')
+                        ">
+                                    El Nombre es requerido
+                                </small>
+                                <small class="invalid-feedback" *ngIf="!formPage1.get('name')!.valid && 
+                                formPage1.get('name')!.touched &&
+                                formPage1.get('name')!.getError('repeated')">
+                                    El Nombre ya existe
+                                </small>
+                            </div>
+                            <div class="col-6">
+                                <label for="dependents" class="form-label">Personas a cargo</label>
+                                <input type="number" class="form-control" aria-label="dependents"
+                                    formControlName="dependents" [ngClass]="{
+                        'is-invalid': !formPage1.get('dependents')?.valid && formPage1.get('dependents')?.touched
+                        }">
+                                <small class="invalid-feedback" *ngIf="formPage1.get('dependents')!.invalid &&
+                        formPage1.get('dependents')!.touched &&
+                        formPage1.get('dependents')!.getError('min') ">
+                                    La cantidad de personas a cargo debe ser positiva
+                                </small>
+                                <small class="invalid-feedback" *ngIf="formPage1.get('dependents')!.invalid &&
+                        formPage1.get('dependents')!.touched &&
+                        formPage1.get('dependents')!.getError('required') ">
+                                    La cantidad de personas a cargo es requerida
+                                </small>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col">
+                                <label for="objectives" class="form-label">Objetivo del puesto</label>
+                                <textarea class="form-control" aria-label="objectives" formControlName="objectives"
+                                    [ngClass]="{
+                        'is-invalid': formPage1.get('objectives')?.invalid && formPage1.get('objectives')?.touched
+                        }"></textarea>
+                                <small class="invalid-feedback" *ngIf="formPage1.get('objectives')!.invalid &&
+                        formPage1.get('objectives')!.touched &&
+                        formPage1.get('objectives')!.getError('required') ">
+                                    El objetivo del puesto es requerido
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-6 d-grid gap-2 d-md-block">
+                            <button type="button" class="btn btn-danger" (click)="cancel()">Cancelar</button>
+                        </div>
+                        <div class="col-6 d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="button" class="btn btn-primary" (click)="nextPage()">Siguiente</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+
+            <!-- FORMULARIO DE RESPONSABILIDAD -->
+
+            <form [formGroup]="formPage2" style="border: 2px solid black; border-radius: 5px;" *ngIf="page == 2">
+                <div class="container" style="padding: 10px;">
+                    <div class="row">
+                        <label>Agregar responsabilidades</label>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div formArrayName="responsibilities">
+                            <div [formGroupName]="i"
+                                *ngFor="let responsibility of responsibilities.controls; let i = index">
+                                <br *ngIf="i > 0">
+                                <div class="row">
+                                    <h5>Responsabilidad Nº {{i + 1}}</h5>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="name" class="form-label">Nombre</label>
+                                        <input type="text" class="form-control" aria-label="Name" formControlName="name"
+                                            [ngClass]="{
+                        'is-invalid': responsibility.get('name')?.invalid && responsibility.get('name')?.touched
+                        }">
+                                        <small class="invalid-feedback" *ngIf="!responsibility.get('name')!.valid &&
+                        responsibility.get('name')!.touched &&
+                        responsibility.get('name')!.getError('required')
+                        ">
+                                            El Nombre es requerido
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-6 d-grid gap-2 d-md-block">
+                                    <button type="button" class="btn btn-outline-danger"
+                                        (click)="deleteArray(responsibilities)"
+                                        *ngIf="responsibilities.length > 1">Eliminar</button>
+                                </div>
+                                <div class="col-6 d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <button type="button" class="btn btn-outline-primary"
+                                        (click)="addArray(responsibilities)">Agregar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-6 d-grid gap-2 d-md-block">
+                            <button type="button" class="btn btn-danger" (click)="cancel()">Cancelar</button>
+                        </div>
+                        <div class="col-6 d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="button" class="btn btn-success" (click)="previousPage()">Atras</button>
+                            <button type="button" class="btn btn-primary" (click)="nextPage()">Siguiente</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- FORMULARIO DE FUNCIONES -->
+
+            <form [formGroup]="formPage3" style="border: 2px solid black; border-radius: 5px;" *ngIf="page == 3">
+                <div class="container" style="padding: 10px;">
+                    <div class="row">
+                        <label>Agreagar funciones</label>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div formArrayName="functions">
+                            <div [formGroupName]="i" *ngFor="let function of functions.controls; let i = index">
+                                <br *ngIf="i > 0">
+                                <div class="row">
+                                    <h5>Función Nº {{i + 1}}</h5>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="name" class="form-label">Nombre</label>
+                                        <input type="text" class="form-control" aria-label="Name" formControlName="name"
+                                            [ngClass]="{
+                        'is-invalid': function.get('name')?.invalid && function.get('name')?.touched
+                        }">
+                                        <small class="invalid-feedback" *ngIf="!function.get('name')!.valid &&
+                        function.get('name')!.touched &&
+                        function.get('name')!.getError('required')
+                        ">
+                                            El Nombre es requerido
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-6 d-grid gap-2 d-md-block">
+                                    <button type="button" class="btn btn-outline-danger"
+                                        (click)="deleteArray(functions)" *ngIf="functions.length > 1">Eliminar</button>
+                                </div>
+                                <div class="col-6 d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <button type="button" class="btn btn-outline-primary"
+                                        (click)="addArray(functions)">Agregar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-6 d-grid gap-2 d-md-block">
+                            <button type="button" class="btn btn-danger" (click)="cancel()">Cancelar</button>
+                        </div>
+                        <div class="col-6 d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="button" class="btn btn-success" (click)="previousPage()">Atras</button>
+                            <button type="button" class="btn btn-primary" (click)="nextPage()">Siguiente</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- FORMULARIO DE PERFIL REQUERIDO -->
+
+            <form [formGroup]="formPage4" style="border: 2px solid black; border-radius: 5px;" *ngIf="page == 4">
+                <div class="container" style="padding: 10px;">
+                    <div class="row">
+                        <label>Datos del Perfil Requerido</label>
+                    </div>
+                    <hr>
+                    <div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="ageCategory" class="form-label">Rango de edad</label>
+                                <input type="number" class="form-control" formControlName="ageCategory" id="ageCategory"
+                                    [ngClass]="{
+                                  'is-invalid': formPage4.get('ageCategory')?.invalid && formPage4.get('ageCategory')?.touched
+                                }">
+                                <small class="invalid-feedback" *ngIf="!formPage4.get('ageCategory')!.valid &&
+                                formPage4.get('ageCategory')!.touched &&
+                                formPage4.get('ageCategory')!.getError('min')
+                                ">
+                                    El Rango de Edad debe ser positivo
+                                </small>
+                            </div>
+                            <div class="col">
+                                <label for="placeResidency" class="form-label">Lugar de recidencia</label>
+                                <input type="text" class="form-control" formControlName="placeResidency"
+                                    id="placeResidency">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col">
+                                <label for="timeAvailability" class="form-label">Disponibilidad horaria</label>
+                                <input type="text" class="form-control" formControlName="timeAvailability"
+                                    id="timeAvailability">
+                            </div>
+                            <div class="col">
+                                <label for="contractType" class="form-label">Modalidad de contratación</label>
+                                <input type="text" class="form-control" formControlName="contractType"
+                                    id="contractType">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <label class="form-label">Genero</label>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-check col-4">
+                                    <input class="form-check-input" type="radio" name="gender" id="flexRadioDefault1"
+                                        (click)="setGender('MALE')">
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        Masculino
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-check col-4">
+                                    <input class="form-check-input" type="radio" name="gender" id="flexRadioDefault2"
+                                        (click)="setGender('FEMALE')">
+                                    <label class="form-check-label" for="flexRadioDefault2">
+                                        Femenino
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-check col-4">
+                                    <input class="form-check-input" type="radio" name="gender" id="flexRadioDefault2"
+                                        (click)="setGender('OTHER')" checked>
+                                    <label class="form-check-label" for="flexRadioDefault2">
+                                        Otro
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <label class="form-label">Educación formal minima</label>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-check col-4">
+                                    <input class="form-check-input" type="radio" name="minimalEducation"
+                                        id="flexRadioDefault1" (click)="setMinimalEducation('SECONDARY')">
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        Secundario
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-check col-4">
+                                    <input class="form-check-input" type="radio" name="minimalEducation"
+                                        id="flexRadioDefault2" (click)="setMinimalEducation('TERTIARY')">
+                                    <label class="form-check-label" for="flexRadioDefault2">
+                                        Terciario
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-check col-4">
+                                    <input class="form-check-input" type="radio" name="minimalEducation"
+                                        id="flexRadioDefault2" (click)="setMinimalEducation('UNIVERSITY')" checked>
+                                    <label class="form-check-label" for="flexRadioDefault2">
+                                        Universitario
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col">
+                                <label for="title" class="form-label">Titulos</label>
+                                <input type="text" class="form-control" formControlName="title" id="title">
+                            </div>
+                            <div class="col">
+                                <label for="experience" class="form-label">Experiencia minima</label>
+                                <input type="text" class="form-control" formControlName="experience" id="experience">
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-6 d-grid gap-2 d-md-block">
+                            <button type="button" class="btn btn-danger" (click)="cancel()">Cancelar</button>
+                        </div>
+                        <div class="col-6 d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="button" class="btn btn-success" (click)="previousPage()">Atras</button>
+                            <button type="button" class="btn btn-primary" (click)="nextPage()">Siguiente</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- FORMULARIO DE COMPETENCIAS CONDUCTALES -->
+
+            <form [formGroup]="formPage5" style="border: 2px solid black; border-radius: 5px;" *ngIf="page == 5">
+                <div class="container" style="padding: 10px;">
+                    <div class="row">
+                        <label>Datos de competencias conductales</label>
+                    </div>
+                    <hr>
+                    <div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="socialSkills" class="form-label">Habilidades sociales</label>
+                                <input type="text" class="form-control" formControlName="socialSkills"
+                                    id="socialSkills">
+                            </div>
+                            <div class="col">
+                                <label for="manualSkills" class="form-label">Modalidad de contratación</label>
+                                <input type="text" class="form-control" formControlName="manualSkills"
+                                    id="manualSkills">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col">
+                                <label for="mentalSkills" class="form-label">Habilidades mentales</label>
+                                <input type="text" class="form-control" formControlName="mentalSkills"
+                                    id="mentalSkills">
+                            </div>
+                            <div class="col">
+                                <label for="changeFlexibilities" class="form-label">Flexibilidad a los cambios</label>
+                                <input type="text" class="form-control" formControlName="changeFlexibilities"
+                                    id="changeFlexibilities">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col">
+                                <label for="serviceVocation" class="form-label">Vocación de servicio</label>
+                                <input type="text" class="form-control" formControlName="serviceVocation"
+                                    id="serviceVocation">
+                            </div>
+                            <div class="col">
+                                <label for="analyticalSkills" class="form-label">Capacidad analítica</label>
+                                <input type="text" class="form-control" formControlName="analyticalSkills"
+                                    id="analyticalSkills">
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-6 d-grid gap-2 d-md-block">
+                            <button type="button" class="btn btn-danger" (click)="cancel()">Cancelar</button>
+                        </div>
+                        <div class="col-6 d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="button" class="btn btn-success" (click)="previousPage()">Atras</button>
+                            <button type="button" class="btn btn-primary" (click)="onSubmit()">Agregar</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
