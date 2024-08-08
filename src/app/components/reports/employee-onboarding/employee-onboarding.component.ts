@@ -54,7 +54,7 @@ export class EmployeeOnboardingComponent {
     return this.fb.group({
       startDate: ['', [Validators.required]],
       endDate: ['', [Validators.required]],
-      type: ['a', [Validators.required]],
+      type: ['integrations', [Validators.required]],
       graphic: ['bar', [Validators.required]],
       module: ['employee', [Validators.required]]
     }, { validators: dateRangeValidator })
@@ -63,14 +63,14 @@ export class EmployeeOnboardingComponent {
   async showGraphs() {
     markFormGroupTouched(this.filterForm);
     if (this.filterForm.valid) {
-      let module = this.filterForm.get('module')?.value;
+      let moduleType = this.filterForm.get('module')?.value;
       let type = this.filterForm.get('type')?.value;
       let graphic = this.filterForm.get('graphic')?.value;
       let startDate = this.filterForm.get('startDate')?.value;
       let endDate = this.filterForm.get('endDate')?.value;
       let unit = this.getUnitMeasurement(startDate, endDate);
       
-      await this.reportService.getEmployeeIntegrations(startDate, endDate, unit).toPromise().then(
+      await this.reportService.getReport(startDate, endDate, unit, moduleType, type).toPromise().then(
         (response: Record<string, number> | undefined) => {
           if (response) {
             this.report = response;
