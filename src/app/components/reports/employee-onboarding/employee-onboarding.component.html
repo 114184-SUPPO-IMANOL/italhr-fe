@@ -22,8 +22,8 @@
       <div class="col-md-3">
         <label for="type" class="form-label">Tipo de reporte</label>
         <select [class.is-invalid]="filterForm.get('type')?.invalid && (filterForm.get('type')?.dirty || filterForm.get('type')?.touched)" id="type" formControlName="type" class="form-select">
-          <option value="a">Altas</option>  
-          <option value="b">Bajas</option>
+          <option value="integrations">Altas</option>  
+          <option value="deleted">Bajas</option>
         </select>
         <small class="invalid-feedback" *ngIf="filterForm.get('type')!.invalid && filterForm.get('type')!.touched && filterForm.get('type')!.getError('required')">
           El tipo de reporte es requerido
