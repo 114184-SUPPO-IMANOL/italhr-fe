@@ -16,10 +16,32 @@ export class ReportService {
   integrations: string = "/integrations"
   deleted: string = "/deleted"
 
-  hardCodedActive: boolean = true;
+  hardCodedActive: boolean = false;
   hardCodedMapping: string = "/hardcoded"
 
   constructor(private http: HttpClient) { }
+
+  getReport(startDate: String, endDate: String, unit: String, module: String, type: String) {
+    if (module === "employee") {
+      if (type === "integrations") {
+        return this.getEmployeeIntegrations(startDate, endDate, unit);
+      } else {
+        return this.getEmployeeDeleted(startDate, endDate, unit);
+      }
+    } else if (module === "department") {
+      if (type === "integrations") {
+        return this.getDepartmentIntegrations(startDate, endDate, unit);
+      } else {
+        return this.getDepartmentDeleted(startDate, endDate, unit);
+      }
+    } else {
+      if (type === "integrations") {
+        return this.getWorkstationIntegrations(startDate, endDate, unit);
+      } else {
+        return this.getWorkstationDeleted(startDate, endDate, unit);
+      }
+    }
+  }
 
   getEmployeeIntegrations(startDate: String, endDate: String, unit: String): Observable<Record<string, number>>{
     if (this.hardCodedActive) {
