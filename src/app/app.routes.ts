@@ -15,33 +15,36 @@ import { ChangePasswordComponent } from './components/login/change-password/chan
 import { EmployeeOnboardingComponent } from './components/reports/employee-onboarding/employee-onboarding.component';
 import { TermsAndConditionsComponent } from './components/utils/terms-and-conditions/terms-and-conditions.component';
 import { FrequentQuestionsComponent } from './components/utils/frequent-questions/frequent-questions.component';
+import { NotFoundComponent } from './components/utils/not-found/not-found.component';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-    {path: 'home', component: HomeComponent},
+    {path: 'home', component: HomeComponent, canActivate: [authGuard]},
     {path: 'employees', children: [
-        {path: '', component: ListEmployeeComponent},
-        {path: 'add', component: AddEmployeeComponent},
-        {path: ':id', component: UpdateEmployeeComponent}
+        {path: '', component: ListEmployeeComponent, canActivate: [authGuard]},
+        {path: 'add', component: AddEmployeeComponent, canActivate: [authGuard]},
+        {path: ':id', component: UpdateEmployeeComponent, canActivate: [authGuard]}
     ]},
     {path: 'departments', children: [
-        {path: '', component: ListDepartmentComponent},
-        {path: 'add', component: AddDepartmentComponent},
-        {path: ':id', component: UpdateDepartmentComponent}
+        {path: '', component: ListDepartmentComponent, canActivate: [authGuard]},
+        {path: 'add', component: AddDepartmentComponent, canActivate: [authGuard]},
+        {path: ':id', component: UpdateDepartmentComponent, canActivate: [authGuard]}
     ]},
     {path: 'users', children: [
-        {path: ':id', component: AddUserComponent}
+        {path: ':id', component: AddUserComponent, canActivate: [authGuard]}
     ]},
     {path: 'workstations', children: [
-        {path: '', component: ListWorkstationComponent},
-        {path: 'add', component: AddWorkstationComponent},
-        {path: ':id', component: UpdateWorkstationComponent}
+        {path: '', component: ListWorkstationComponent, canActivate: [authGuard]},
+        {path: 'add', component: AddWorkstationComponent, canActivate: [authGuard]},
+        {path: ':id', component: UpdateWorkstationComponent, canActivate: [authGuard]}
     ]},
     {path: 'login', component: LoginComponent},
     {path: 'forgot-password', component: ChangePasswordComponent},
     {path: 'reports', children: [
-        {path: 'employees', component: EmployeeOnboardingComponent}
+        {path: 'employees', component: EmployeeOnboardingComponent, canActivate: [authGuard]}
     ]},
     {path: 'terms-and-conditions', component: TermsAndConditionsComponent},
     {path: 'frequent-questions', component: FrequentQuestionsComponent},
-    {path: '**', redirectTo: 'login'},
+    {path: 'not-auth', component: NotFoundComponent},
+    {path: '**', redirectTo: 'not-auth'},
 ];
