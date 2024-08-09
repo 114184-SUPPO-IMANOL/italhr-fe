@@ -23,6 +23,10 @@ export class ListDepartmentComponent {
   flagActive: boolean = false;
   loading: boolean = false;
 
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  pagination: any = [];
+
   constructor(private router: Router, private departmentService: DepartmentService) { }
 
   ngOnInit() {
@@ -47,6 +51,7 @@ export class ListDepartmentComponent {
         });
         this.departments.push(department);
       })
+      this.pageChanged(1);
       this.loading = false;
     }, (error: any) => {
       console.log(error);
@@ -175,12 +180,14 @@ export class ListDepartmentComponent {
       this.onfilterInput(this.inputForFilter)
     }
     this.filterActives(event.target.checked);
+    this.pageChanged(1);
   }
 
   callfilterInput(event: any) {
     this.departments = this.departmentsWithoutFilter;
     this.onfilterInput(event.target.value);
     this.filterActives(this.flagActive);
+    this.pageChanged(1);
   }
 
   filterActives(isActive: boolean) {
@@ -212,6 +219,23 @@ export class ListDepartmentComponent {
       const lowerCaseWord = word.capacity.toString();
       return lowerCaseWord.startsWith(input);
     });
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.departments.length / this.itemsPerPage);
+  }
+
+  pageChanged(page: number) {
+
+    if (page >= 1) {
+      const startIndex = (page - 1) * this.itemsPerPage;
+      this.currentPage = page;
+      this.pagination = this.departments.slice(startIndex, startIndex + this.itemsPerPage);
+    }
+  }
+
+  get pages(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
   }
 
 }
