@@ -1,106 +1,249 @@
-<link rel="stylesheet"
-  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-  <div *ngIf="loading" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: rgba(0, 0, 0, 0.5);">
-    <div class="spinner-border" role="status" style="width: 3rem; height: 3rem;">
-        <span class="visually-hidden">Loading...</span>
-    </div>
-  </div>
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { EmployeeService } from '../../../services/employee/employee.service';
+import Swal from 'sweetalert2';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable'; 
 
-  <div class="container">
-    <h1>Empleados</h1>
-    <hr>
-    <div>
-        <div class="row">
-            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <button class="btn btn-success" (click)="openCreateEmployee()">
-                    Agregar
-                </button>  
-                <button class="btn btn-danger" (click)="downloadList()">
-                    Descargar
-                </button> 
-              </div>
-        </div>
-        <h4>Filtrar:</h4>
-        <div class="row">
-            <div class="col-md-4">
-                <input type="text" class="form-control" id="validationServer01" placeholder="Legajo, Nombre, Apellido, Documento"
-                [(ngModel)]="inputForFilter" (input)="callfilterInput($event)">
-              </div>
-              <div class="col-md-4">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="flexCheckDefault" [(ngModel)]="flagActive" (click)="callFilterActives($event)">
-                  <label class="form-check-label" for="flexCheckDefault">
-                    Activos
-                  </label>
-                </div>
-              </div>
-        </div>
-    </div>
-    <br>
-    <hr>
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col" class="text-center">Legajo</th>
-                <th scope="col" class="text-center">Nombre</th>
-                <th scope="col" class="text-center">Apellido</th>
-                <th scope="col" class="text-center">Documento</th>
-                <th scope="col" class="text-center">Estado</th>
-                <th scope="col" class="text-center">Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let e of pagination">
-                <td class="text-center">{{e.id}}</td>
-                <td class="text-center">{{ e.firstName }}</td>
-                <td class="text-center">{{ e.lastName }}</td>
-                <td class="text-center">{{ e.documentNumber }}</td>
-                <td *ngIf="e.isActive" class="text-center"><span class="material-symbols-outlined" style="color: rgb(3, 139, 3);">
-                  check_circle
-                </span></td>
-                <td *ngIf="!e.isActive" class="text-center"><span style="color: rgb(202, 0, 0);" class="material-symbols-outlined">
-                  cancel
-              </span></td>   
-              <td class="text-center">
-                <div class="dropdown">
-                  <button type="button" class="btn btn-light" data-bs-toggle="dropdown" aria-expanded="false">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
-                      <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
-                    </svg>
-                  </button>
-                  <div class="dropdown-content text-left">
-                    <a (click)="openUpdate(e)">Actualizar</a>
-      
-                    <a *ngIf="e.isActive" (click)="showConfirmationDelete(e)">Eliminar</a>
-                    <a *ngIf="!e.isActive" (click)="showConfirmationActive(e)">Activar</a>
-                  </div>
-                </div>
-              </td>
-            </tr>
-        </tbody>
-    </table>
-    <nav aria-label="Page navigation example" class="my-pagination">
-      <ul class="pagination justify-content-center mb-4">
-        <li class="page-item" [class.disabled]="currentPage === 1">
-          <a class="page-link" (click)="pageChanged(currentPage - 1)" aria-label="Previous">
-            <span aria-hidden="true">&laquo;</span>
-          </a>
-        </li>
-        <li class="page-item" *ngFor="let page of pages" [class.active]="currentPage === page">
-          <a class="page-link" (click)="pageChanged(page)">{{ page }}</a>
-        </li>
-        <li class="page-item" [class.disabled]="currentPage === totalPages">
-          <a class="page-link" (click)="pageChanged(currentPage + 1)" aria-label="Next">
-            <span aria-hidden="true">&raquo;</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
-</div>
 
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<!-- Popper.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<!-- Bootstrap JS -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+@Component({
+  selector: 'app-list-employee',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './list-employee.component.html',
+  styleUrl: './list-employee.component.css'
+})
+export class ListEmployeeComponent {
+
+  employees: any = [];
+  employeesWithoutFilter: any = [];
+  inputForFilter: string = '';
+  flagActive: boolean = false;
+  loading: boolean = false;
+
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  pagination: any = [];
+
+  constructor(private router: Router, private employeeService: EmployeeService) { }
+
+  ngOnInit() {
+    this.loading = true;
+    this.getAllEmployees();
+    this.employeesWithoutFilter = this.employees;
+  }
+  getAllEmployees() {
+    this.employeeService.getEmployees().subscribe((data: any) => {
+      data.forEach((x: any) => {
+        let employee = {
+          id: x.id,
+          firstName: x.first_name,
+          lastName: x.last_name,
+          documentNumber: x.document_number,
+          isActive: x.is_active,
+          isReferent: x.is_referent
+        }
+        this.employees.push(employee);
+      })
+      this.pageChanged(1);
+      this.loading = false;
+    }, (error: any) => {
+      console.log(error);
+      Swal.fire({
+        title: "Error!",
+        text: "No se pudo cargar la lista de empleados.",
+        icon: "error"
+      });
+      this.router.navigate(['home']);
+      });
+  }
+
+  showConfirmationDelete(employee: any) {
+    Swal.fire({
+      title: "Estas seguro?",
+      text: "Se dará de baja el empleado!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si, dar de baja!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.employeeService.deleteEmployee(employee.id).subscribe(
+          (data: any) => {
+          this.employees[this.employees.indexOf(employee)].isActive = false;
+          Swal.fire({
+            title: "Éxito!",
+            text: "Se dió de baja el empleado.",
+            icon: "success"
+          });
+        },
+        (error: any) => {
+          console.log(error);
+          Swal.fire({
+            title: "Error!",
+            text: "No se pudo dar de baja el empleado.",
+            icon: "error"
+          });
+        });
+      }
+    });
+  }
+  showConfirmationActive(employee: any) {
+    Swal.fire({
+      title: "Estas seguro?",
+      text: "Se dará de alta el empleado!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si, dar de alta!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.employeeService.activateEmployee(employee.id).subscribe(
+          (data: any) => {
+          this.employees[this.employees.indexOf(employee)].isActive = true;
+          Swal.fire({
+            title: "Éxito!",
+            text: "Se dió de alta el empleado.",
+            icon: "success"
+          });
+        },
+        (error: any) => {
+          console.log(error);
+          Swal.fire({
+            title: "Error!",
+            text: "No se pudo dar de alta el empleado.",
+            icon: "error"
+          });
+        });
+      }
+    });
+  }
+  openUpdate(employee: any) {
+    this.router.navigate(['employees',  employee.id]);
+  }
+  openInfo(employee: any) {
+    throw new Error('Method not implemented.');
+  }
+  filter($event: Event) {
+    throw new Error('Method not implemented.');
+  }
+  openCreateEmployee() {
+    this.router.navigate(['employees','add']);
+  }
+  downloadList() {
+    let data = this.employees;
+    let headers = ["Legajo", "Nombre", "Apellido", "Documento", "Activo"];
+    let dataForPdf = data.map((x: { id: any; firstName: any; lastName: any; documentNumber: any; isActive: any; }) => [x.id, x.firstName, x.lastName, x.documentNumber, x.isActive ? 'Si' : 'No']);
+    this.generatePdf(dataForPdf, headers, 'Listado de empleados');
+    Swal.fire({
+      position: "top-end",
+      icon: "success",
+      title: "Descargando listado...",
+      showConfirmButton: false,
+      timer: 1500
+    });
+  }
+
+  generatePdf(data: any[], columns: any[], title: string): void {
+    const pdf = new jsPDF() as any;
+
+    pdf.text(title, 10, 10);
+
+    pdf.autoTable({
+      startY: 20,
+      head: [columns],
+      body: data,
+      theme: 'grid',
+      styles: { cellWidth: 'auto', overflow: 'linebreak', fontSize: 7, cellPadding: 1, minCellHeight: 10 },
+      headStyles: { fontStyle: 'bold', fillColor: [22, 160, 133] }, // Personaliza según tus necesidades
+      columnStyles: { 0: { cellWidth: 'auto' }, 1: { cellWidth: 'auto' } }, // Ajusta según tus necesidades
+    });
+
+    pdf.save('table.pdf');
+  }
+
+  callFilterActives(event: any) {
+    this.employees = this.employeesWithoutFilter;
+    if(this.inputForFilter != ''){
+      this.onfilterInput(this.inputForFilter)
+    }
+    this.filterActives(event.target.checked);
+    this.pageChanged(1);
+  }
+
+  callfilterInput(event: any) {
+    this.employees = this.employeesWithoutFilter;
+    this.onfilterInput(event.target.value);
+    this.filterActives(this.flagActive);
+    this.pageChanged(1);
+  }
+
+  filterActives(isActive: boolean) {
+    if (isActive) {
+      this.employees = this.employees.filter((x: { isActive: any; }) => x.isActive);
+    }
+  }
+
+  onfilterInput(filter: string) {
+    let filterFirstName: any[] = this.filterFirstName(filter);
+    let filterLastName: any[] = this.filterLastName(filter);
+    let filterDocument: any[] = this.filterDocument(filter);
+    let filterId: any[] = this.filterId(filter);
+
+    let filterList: any[] = filterFirstName
+      .concat(filterLastName, filterDocument, filterId)
+      .filter((item, index, array) => array.indexOf(item) === index);
+    this.employees = filterList;
+    
+  }
+
+  filterFirstName(input: string): any[] {
+    return this.employees.filter((word: { firstName: string; }) => {
+      const lowerCaseWord = word.firstName.toLowerCase();
+      return lowerCaseWord.startsWith(input.toLowerCase());
+    });
+  }
+
+  filterLastName(input: string): any[] {
+    return this.employees.filter((word: { lastName: string; }) => {
+      const lowerCaseWord = word.lastName.toLowerCase();
+      return lowerCaseWord.startsWith(input.toLowerCase());
+    });
+  }
+
+  filterDocument(input: string): any[] {
+    return this.employees.filter((word: { documentNumber: string; }) => {
+      const lowerCaseWord = word.documentNumber.toLowerCase();
+      return lowerCaseWord.startsWith(input);
+    });
+  }
+
+  filterId(input: string): any[] {
+    return this.employees.filter((word: { id: number; }) => {
+      const lowerCaseWord = word.id.toString();
+      return lowerCaseWord.startsWith(input);
+    });
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.employees.length / this.itemsPerPage);
+  }
+
+  pageChanged(page: number) {
+
+    if (page >= 1) {
+      const startIndex = (page - 1) * this.itemsPerPage;
+      this.currentPage = page;
+      this.pagination = this.employees.slice(startIndex, startIndex + this.itemsPerPage);
+    }
+  }
+
+  get pages(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
+}
