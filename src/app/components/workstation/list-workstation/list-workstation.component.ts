@@ -22,6 +22,10 @@ export class ListWorkstationComponent {
   flagActive: boolean = false;
   loading: boolean = false;
 
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  pagination: any = [];
+
   constructor(private router: Router, private workstationService: WorkstationService) { }
 
   ngOnInit() {
@@ -40,6 +44,7 @@ export class ListWorkstationComponent {
         }
         this.workstations.push(workstation);
       })
+      this.pageChanged(1);
     }, (error: any) => {
       console.log(error);
       Swal.fire({
@@ -165,12 +170,14 @@ export class ListWorkstationComponent {
       this.onfilterInput(this.inputForFilter)
     }
     this.filterActives(event.target.checked);
+    this.pageChanged(1);
   }
 
   callfilterInput(event: any) {
     this.workstations = this.workstationsWithoutFilter;
     this.onfilterInput(event.target.value);
     this.filterActives(this.flagActive);
+    this.pageChanged(1);
   }
 
   filterActives(isActive: boolean) {
@@ -202,6 +209,23 @@ export class ListWorkstationComponent {
       const lowerCaseWord = word.dependents.toString();
       return lowerCaseWord.startsWith(input);
     });
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.workstations.length / this.itemsPerPage);
+  }
+
+  pageChanged(page: number) {
+
+    if (page >= 1) {
+      const startIndex = (page - 1) * this.itemsPerPage;
+      this.currentPage = page;
+      this.pagination = this.workstations.slice(startIndex, startIndex + this.itemsPerPage);
+    }
+  }
+
+  get pages(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
   }
 
 }
