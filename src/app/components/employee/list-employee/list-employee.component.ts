@@ -23,6 +23,10 @@ export class ListEmployeeComponent {
   flagActive: boolean = false;
   loading: boolean = false;
 
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  pagination: any = [];
+
   constructor(private router: Router, private employeeService: EmployeeService) { }
 
   ngOnInit() {
@@ -43,6 +47,7 @@ export class ListEmployeeComponent {
         }
         this.employees.push(employee);
       })
+      this.pageChanged(1);
       this.loading = false;
     }, (error: any) => {
       console.log(error);
@@ -167,12 +172,14 @@ export class ListEmployeeComponent {
       this.onfilterInput(this.inputForFilter)
     }
     this.filterActives(event.target.checked);
+    this.pageChanged(1);
   }
 
   callfilterInput(event: any) {
     this.employees = this.employeesWithoutFilter;
     this.onfilterInput(event.target.value);
     this.filterActives(this.flagActive);
+    this.pageChanged(1);
   }
 
   filterActives(isActive: boolean) {
@@ -220,6 +227,23 @@ export class ListEmployeeComponent {
       const lowerCaseWord = word.id.toString();
       return lowerCaseWord.startsWith(input);
     });
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.employees.length / this.itemsPerPage);
+  }
+
+  pageChanged(page: number) {
+
+    if (page >= 1) {
+      const startIndex = (page - 1) * this.itemsPerPage;
+      this.currentPage = page;
+      this.pagination = this.employees.slice(startIndex, startIndex + this.itemsPerPage);
+    }
+  }
+
+  get pages(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
   }
 
 }
